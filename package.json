@@ -5,12 +5,21 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-	"postinstall": "./node_modules/.bin/browserify app.js -o bundle.js && echo \"DONE!\""
+    "install": "napa",
+    "postinstall": "./node_modules/.bin/browserify app.js -o bundle.js && echo \"DONE!\""
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "underscore": "^1.6.0",
-    "browserify": "^4.1.6"
+    "browserify": "^4.1.6",
+    "napa": "^0.4.1",
+    "browserify-shim": "^3.5.0"
+  },
+  "napa": {
+    "webcl": "3DRoberto/webclgl"
+  },
+  "browser": {
+    "WebCLGL": "webcl/WebCLGL_2.0.Min.class.js"
   }
 }
