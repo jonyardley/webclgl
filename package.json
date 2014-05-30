@@ -1,0 +1,16 @@
+{
+  "name": "EC2Test",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"postinstall": "./node_modules/.bin/browserify app.js -o bundle.js && echo \"DONE!\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "underscore": "^1.6.0",
+    "browserify": "^4.1.6"
+  }
+}
