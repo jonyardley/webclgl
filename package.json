@@ -11,15 +11,23 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "underscore": "^1.6.0",
     "browserify": "^4.1.6",
+    "browserify-shim": "^3.5.0",
     "napa": "^0.4.1",
-    "browserify-shim": "^3.5.0"
+    "string-to-jsify": "^0.3.1",
+    "underscore": "^1.6.0"
   },
   "napa": {
-    "webcl": "3DRoberto/webclgl"
+    "webcl": "3DRoberto/webclgl",
+    "THREE": "mrdoob/three.js"
   },
   "browser": {
     "WebCLGL": "webcl/WebCLGL_2.0.Min.class.js"
-  }
+  },
+	"browserify": {
+		"transform": ["string-to-jsify"]
+	},
+	"string-to-jsify": {
+		"extensions": [".glsl"]
+	}
 }
