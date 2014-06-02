@@ -9,7 +9,7 @@ var scene = new THREE.Scene(),
 	camera = new THREE.PerspectiveCamera( 45, dispSize.x/dispSize.y, 0.1, 100 );
 	renderer = new THREE.WebGLRenderer({alpha: false });
 
-camera.position.z = 1;
+camera.position.z = 50;
 camera.position.y = 0;
 camera.position.x = 0;
 
@@ -25,7 +25,7 @@ document.body.appendChild( renderer.domElement );
 
 
 //textures
-var texSize = 32;
+var texSize = 512;
 var velTexture = [];
 var posTexture = [];
 
@@ -89,7 +89,7 @@ var velFrag = require('./textures/velFrag.glsl');
 var velUniforms = {
 	velTex: {type: "t", value: velTexture[0]},
 	posTex: {type: "t", value: posTexture[0]},
-	targetPos: {type: "v3", value: new THREE.Vector3(0.7, 0.5, 0.5)},
+	targetPos: {type: "v3", value: new THREE.Vector3(0.7, -0.5, 0.5)},
 	time: 	{ type: "f", value: 1.0 },
 	gravDist: 	{ type: "f", value: 1000.0 }
 };
@@ -180,7 +180,7 @@ var dispMaterial = new THREE.ShaderMaterial( {
 
 var particles = new THREE.Geometry();
 
-for (var i = 0; i < 1000; i++) {
+for (var i = 0; i < 262144; i++) {
 	particles.vertices.push(new THREE.Vector3((i % texSize)/texSize, Math.floor(i/texSize)/texSize , 0)); //   i/texSize
 }
 
@@ -190,43 +190,55 @@ scene.add(particleMesh);
 
 var buffer = 0;
 var rand = true;
+var fps = 60;
+var now;
+var then = Date.now();
+var interval = 1000/fps;
+var delta;
 
 //animate!
 function render() {
 
 
-	var a, b;
-	if (buffer == 1) {
-		buffer = 0;
-		a = 1;
-		b = 0;
-	} else {
-		buffer = 1;
-		a = 0;
-		b = 1;
+	now = Date.now();
+	delta = now - then;
+
+	if (delta > interval) {
+		then = now - (delta % interval);
+
+		var a, b;
+		if (buffer == 1) {
+			buffer = 0;
+			a = 1;
+			b = 0;
+		} else {
+			buffer = 1;
+			a = 0;
+			b = 1;
+		}
+
+		if (rand == true) {
+			renderer.render(randScene, processCamera, velTexture[a]);
+			renderer.render(randScene, processCamera, posTexture[a]);
+			rand = false;
+		}
+
+		velUniforms.velTex.value = velTexture[a];
+		velUniforms.posTex.value = posTexture[a];
+
+		renderer.render(velScene, processCamera, velTexture[b]);
+
+		posUniforms.velTex.value = velTexture[b];
+		posUniforms.posTex.value = posTexture[a];
+
+		renderer.render(posScene, processCamera, posTexture[b]);
+
+		dispUniforms.posTex.value = posTexture[b];
+
+		renderer.setViewport(0, 0, dispSize.x, dispSize.y);
+
+		renderer.render(scene, camera);
 	}
-
-	if (rand == true) {
-		renderer.render(randScene, processCamera, velTexture[a]);
-		renderer.render(randScene, processCamera, posTexture[a]);
-		rand = false;
-	}
-
-	velUniforms.velTex.value = velTexture[a];
-	velUniforms.posTex.value = posTexture[a];
-
-	renderer.render(velScene, processCamera, velTexture[b]);
-
-	posUniforms.velTex.value = velTexture[b];
-	posUniforms.posTex.value = posTexture[a];
-
-	renderer.render(posScene, processCamera, posTexture[b]);
-
-	dispUniforms.posTex.value = posTexture[b];
-
-	renderer.setViewport(0,0,dispSize.x, dispSize.y);
-
-	renderer.render(scene, camera);
 
 	requestAnimationFrame(render);
 

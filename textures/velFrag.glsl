@@ -13,18 +13,26 @@ void main()
 {
 	vec3 vel = texture2D(velTex, vUv).rgb;
 	vec3 pos = texture2D(posTex, vUv).rgb;
-	vec3 force = vec3(-0.01, 0, 0);
 
 
-	//float dist = max(distance(targetPos, pos)*gravDist, 1.0);
+	float dist = max(distance(targetPos, pos), 1.0);
 
-	//vec3 delta = normalize(targetPos - pos);
+	vec3 delta = normalize(targetPos - pos);
 
-	//vel = vel*0.90 + (delta * force)/(dist);
-	vel = vel+force;
+	vel = vel + (delta * 0.015);
 
-	//conform it;
-	//vel = clamp(vel, -1.0, 1.0)/2.0+0.5;
+	vel = vel + vec3(0.0, 0.004, 0.0);
 
 	gl_FragColor = vec4(vel, 1.0);
 }
+
+
+//old
+	//float force = 5.0;
+	//vec3 centerPoint = vec3(0.0, 0.0, 0.0);
+
+//	float dist = max(distance(centerPoint, pos) * gravDist, 1.0);
+
+//	vec3 delta = normalize(centerPoint - pos);
+
+//	vel = vel*0.90 + (delta * force)/(dist);
